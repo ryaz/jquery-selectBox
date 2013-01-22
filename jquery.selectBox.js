@@ -11,7 +11,7 @@
 if (jQuery)(function($) {
 	$.extend($.fn, {
 		selectBox: function(method, data) {
-			var typeTimer, typeSearch = '',
+			var typeTimer, typeSearch = '', typeSearchCounter = 0, typeSearchArr = [],
 				isMac = navigator.platform.match(/mac/i);
 			//
 			// Private methods
@@ -503,17 +503,32 @@ if (jQuery)(function($) {
 						if (!control.hasClass('selectBox-menuShowing')) showMenu(select);
 						event.preventDefault();
 						clearTimeout(typeTimer);
-						typeSearch += String.fromCharCode(event.charCode || event.keyCode);
-						options.find('A').each(function() {
-							if ($(this).text().substr(0, typeSearch.length).toLowerCase() === typeSearch.toLowerCase()) {
-								addHover(select, $(this).parent());
-								keepOptionInView(select, $(this).parent());
-								return false;
-							}
-						});
+						if (typeSearch === String.fromCharCode(event.charCode || event.keyCode)) {
+							typeSearchCounter += 1;
+							typeSearch = String.fromCharCode(event.charCode || event.keyCode);
+							options.find('A').each(function() {
+								if ($(this).text().substr(0, typeSearch.length).toLowerCase() === typeSearch.toLowerCase()) {
+									typeSearchArr.push($(this))
+								}
+							});
+							addHover(select, $(typeSearchArr[typeSearchCounter]).parent());
+							keepOptionInView(select, $(typeSearchArr[typeSearchCounter]).parent());
+							return false;
+						}
+						else {
+							typeSearch += String.fromCharCode(event.charCode || event.keyCode);
+							options.find('A').each(function() {
+								if ($(this).text().substr(0, typeSearch.length).toLowerCase() === typeSearch.toLowerCase()) {
+									addHover(select, $(this).parent());
+									keepOptionInView(select, $(this).parent());
+									return false;
+								}
+							});
+						}
 						// Clear after a brief pause
 						typeTimer = setTimeout(function() {
 							typeSearch = '';
+							typeSearchCounter = 0;
 						}, 1000);
 						break;
 					}
