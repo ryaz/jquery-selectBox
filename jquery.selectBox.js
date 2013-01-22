@@ -529,6 +529,7 @@ if (jQuery)(function($) {
 						typeTimer = setTimeout(function() {
 							typeSearch = '';
 							typeSearchCounter = 0;
+							typeSearchArr = [];
 						}, 1000);
 						break;
 					}
